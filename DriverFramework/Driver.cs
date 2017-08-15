@@ -57,9 +57,8 @@ namespace DriverFramework
                     service.AddArgument("logfile.txt 2>&1");
                     //optionsPJS.AddAdditionalCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25");
                     DesiredCapabilities phantomCapabilites = DesiredCapabilities.PhantomJS();
-                    optionsPJS.AddAdditionalCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:16.0) Gecko/20121026 Firefox/16.0");
-                    phantomCapabilites.IsJavaScriptEnabled = true;   
-                    service.CookiesFile = "cookies.txt";        
+                    optionsPJS.AddAdditionalCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:16.0) Gecko/20121026 Firefox/16.0");  
+                    //service.CookiesFile = "cookies.txt";        
                     service.LocalStoragePath = rootLocation;
                     driver = new PhantomJSDriver(service, optionsPJS, TimeSpan.FromMinutes(3.0));
 
