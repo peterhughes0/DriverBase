@@ -38,7 +38,7 @@ namespace DriverFramework
                     option.AddArgument("--test-type");
                     option.AddArgument("--disable-extensions");
                     option.AddArgument("start-maximized");
-                    driver = new ChromeDriver(rootLocation, option, TimeSpan.FromMinutes(3.0));
+                    driver = new ChromeDriver(option);
 
                     break;
 
@@ -46,7 +46,8 @@ namespace DriverFramework
                     ChromeOptions headless_option = new ChromeOptions();
                     headless_option.AddArgument("--headlesss");
                     headless_option.AddArgument("--disable-gpu");
-                    driver = new ChromeDriver(rootLocation, headless_option, TimeSpan.FromMinutes(3.0));
+                    headless_option.BinaryLocation = string.Format(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe");
+                    driver = new ChromeDriver(headless_option);
 
                     break;
                 case Browser.PhantomJS:
@@ -192,7 +193,8 @@ namespace DriverFramework
 
         public static void Maximise()
         {
-            driver.Manage().Window.Maximize();
+            // driver.Manage().Window.Maximize();
+            driver.Manage().Window.Size = new System.Drawing.Size(1366, 1500);
         }
 
         public static void MobileResize(int width = 375, int height = 669)
