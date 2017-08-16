@@ -114,6 +114,15 @@ namespace DriverFramework
             }
         }
 
+        public static int GetPageHeight()
+        {
+            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+
+            var height = js.ExecuteScript("return document.documentElement.scrollHeight;");
+
+            return Convert.ToInt32(height);
+        }
+
         public static void ExecuteResultScript(bool result)
         {
             IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
@@ -192,18 +201,20 @@ namespace DriverFramework
 
         public static void Maximise()
         {
-            // driver.Manage().Window.Maximize();
-            driver.Manage().Window.Size = new System.Drawing.Size(1366, 1500);
+            //driver.Manage().Window.Maximize();
+            driver.Manage().Window.Size = new System.Drawing.Size(1366, GetPageHeight());
         }
 
-        public static void MobileResize(int width = 375, int height = 669)
+        public static void MobileResize(int width = 375, int height = 2000)
         {
-            driver.Manage().Window.Size = new System.Drawing.Size(width, height);        
+            driver.Manage().Window.Size = new System.Drawing.Size(width, GetPageHeight());
+            Wait(1);
+            driver.Manage().Window.Size = new System.Drawing.Size(width, GetPageHeight());
         }
 
-        public static void DesktopResize(int width = 1366, int height = 821)
+        public static void DesktopResize(int width = 1366, int height = 3000)
         {
-            driver.Manage().Window.Size = new System.Drawing.Size(width, height);
+            driver.Manage().Window.Size = new System.Drawing.Size(width, GetPageHeight());
         }
 
         public enum Browser
