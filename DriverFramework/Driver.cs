@@ -44,8 +44,10 @@ namespace DriverFramework
 
                 case Browser.Headless_Chrome:
                     ChromeOptions headless_option = new ChromeOptions();
-                    headless_option.AddArgument("--headlesss");
+                    headless_option.AddArgument("--headless");
                     headless_option.AddArgument("--disable-gpu");
+                    headless_option.AddArgument("--hide-scrollbars");
+                    // headless_option.AddArgument("--remote-debugging-port=80");
                     headless_option.BinaryLocation = string.Format(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe");
                     driver = new ChromeDriver(headless_option);
 
@@ -273,9 +275,10 @@ namespace DriverFramework
         public static void GoTo(string url)
         {
             //Maximise();
-            Wait(2);
+            
              driver.Navigate().GoToUrl(url);
-
+            Wait(1);
+            Maximise();
         }
 
         public static void OpenNewTab()
@@ -294,8 +297,8 @@ namespace DriverFramework
 
 
             driver.Navigate().GoToUrl(url); // Live Site
-
-
+            Wait(1);
+            Maximise();
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
             try
             {
@@ -306,6 +309,8 @@ namespace DriverFramework
             {
                 throw new Exception(string.Format("Failed to access requested page {0}, with specified text: {1}",url,check));
             }
+
+            
 
         }
 
