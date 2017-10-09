@@ -30,28 +30,113 @@ namespace DriverFramework
             //BrowserStack
             DesiredCapabilities capability = null;
 
+            ChromeMobileEmulationDeviceSettings chromeMobileEmulationDeviceSettings = null;
+
+            ChromeOptions chromeOptions = null;
+
+            InternetExplorerOptions ieOptions = new InternetExplorerOptions();
+
 
             switch (browser)
             {
                 case Browser.Chrome:
-                    ChromeOptions option = new ChromeOptions();
-                    option.AddArgument("--test-type");
-                    option.AddArgument("--disable-extensions");
-                    option.AddArgument("start-maximized");
-                    driver = new ChromeDriver(option);
+                    chromeOptions = new ChromeOptions();
+                    chromeOptions.AddArgument("--test-type");
+                    chromeOptions.AddArgument("--disable-extensions");
+                    chromeOptions.AddArgument("start-maximized");
+                    driver = new ChromeDriver(chromeOptions);
+                    Maximise();
 
                     break;
 
                 case Browser.Headless_Chrome:
-                    ChromeOptions headless_option = new ChromeOptions();
-                    headless_option.AddArgument("--headless");
-                    headless_option.AddArgument("--disable-gpu");
-                    headless_option.AddArgument("--hide-scrollbars");
-                    // headless_option.AddArgument("--remote-debugging-port=80");
-                    headless_option.BinaryLocation = string.Format(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe");
-                    driver = new ChromeDriver(headless_option);
+                    chromeOptions = new ChromeOptions();
+                    chromeOptions.AddArgument("--headless");
+                    chromeOptions.AddArgument("--hide-scrollbars");
+                    //headless_option.AddArgument("--remote-debugging-port=9222");
+                    chromeOptions.AddArgument("--disable-gpu");
+                    chromeOptions.BinaryLocation = string.Format(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe");
+                    driver = new ChromeDriver(chromeOptions);
+                    Maximise();
 
                     break;
+
+                case Browser.Headless_Chrome_Mobile:
+                    chromeOptions = new ChromeOptions();
+                    chromeOptions.EnableMobileEmulation("iPhone 6");
+                    chromeOptions.AddArgument("--test-type");
+                    chromeOptions.AddArgument("--disable-extensions");
+                    chromeOptions.AddArgument("--headless");
+                    chromeOptions.AddArgument("--disable-gpu");
+                    driver = new ChromeDriver(chromeOptions);
+                    Resize(414, 736);
+                    break;
+
+                case Browser.Chrome_Mobile:
+                    chromeOptions = new ChromeOptions();
+                    chromeOptions.EnableMobileEmulation("iPhone 6");
+                    chromeOptions.AddArgument("--test-type");
+                    chromeOptions.AddArgument("--disable-extensions");
+                    driver = new ChromeDriver(chromeOptions);
+                    Resize(414, 736);
+                    break;
+
+                case Browser.Chrome_Ipad:
+                    chromeMobileEmulationDeviceSettings = new ChromeMobileEmulationDeviceSettings();
+                    chromeMobileEmulationDeviceSettings.Width = 768;
+                    chromeMobileEmulationDeviceSettings.Height = 1024;
+                    chromeMobileEmulationDeviceSettings.UserAgent = "Mozilla/5.0 (iPad; CPU OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1";
+                    chromeOptions = new ChromeOptions();
+                    chromeOptions.EnableMobileEmulation(chromeMobileEmulationDeviceSettings);
+                    chromeOptions.AddArgument("--test-type");
+                    chromeOptions.AddArgument("--disable-extensions");
+                    driver = new ChromeDriver(chromeOptions);
+                    Resize(768, 1024);
+                    break;
+
+                case Browser.Chrome_Landscape_Ipad:
+                    chromeMobileEmulationDeviceSettings = new ChromeMobileEmulationDeviceSettings();
+                    chromeMobileEmulationDeviceSettings.Width = 1024;
+                    chromeMobileEmulationDeviceSettings.Height = 768;
+                    chromeMobileEmulationDeviceSettings.UserAgent = "Mozilla/5.0 (iPad; CPU OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1";
+                    chromeOptions = new ChromeOptions();
+                    chromeOptions.EnableMobileEmulation(chromeMobileEmulationDeviceSettings);
+                    chromeOptions.AddArgument("--test-type");
+                    chromeOptions.AddArgument("--disable-extensions");
+                    driver = new ChromeDriver(chromeOptions);
+                    Resize(1024, 768);
+                    break;
+
+                case Browser.Headless_Chrome_Ipad:
+                    chromeMobileEmulationDeviceSettings = new ChromeMobileEmulationDeviceSettings();
+                    chromeMobileEmulationDeviceSettings.Width = 768;
+                    chromeMobileEmulationDeviceSettings.Height = 1024;
+                    chromeMobileEmulationDeviceSettings.UserAgent = "Mozilla/5.0 (iPad; CPU OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1";
+                    chromeOptions = new ChromeOptions();
+                    chromeOptions.EnableMobileEmulation(chromeMobileEmulationDeviceSettings);
+                    chromeOptions.AddArgument("--test-type");
+                    chromeOptions.AddArgument("--disable-extensions");
+                    chromeOptions.AddArgument("--headless");
+                    chromeOptions.AddArgument("--disable-gpu");
+                    driver = new ChromeDriver(chromeOptions);
+                    Resize(768, 1024);
+                    break;
+
+                case Browser.Headless_Chrome_Landscape_Ipad:
+                    chromeMobileEmulationDeviceSettings = new ChromeMobileEmulationDeviceSettings();
+                    chromeMobileEmulationDeviceSettings.Width = 1024;
+                    chromeMobileEmulationDeviceSettings.Height = 768;
+                    chromeMobileEmulationDeviceSettings.UserAgent = "Mozilla/5.0 (iPad; CPU OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1";
+                    chromeOptions = new ChromeOptions();
+                    chromeOptions.EnableMobileEmulation(chromeMobileEmulationDeviceSettings);
+                    chromeOptions.AddArgument("--test-type");
+                    chromeOptions.AddArgument("--disable-extensions");
+                    chromeOptions.AddArgument("--headless");
+                    chromeOptions.AddArgument("--disable-gpu");
+                    driver = new ChromeDriver(chromeOptions);
+                    Resize(1024, 768);
+                    break;
+
                 case Browser.PhantomJS:
                     PhantomJSOptions optionsPJS = new PhantomJSOptions();
                     PhantomJSDriverService service = PhantomJSDriverService.CreateDefaultService(rootLocation);
@@ -59,7 +144,7 @@ namespace DriverFramework
                     service.AddArgument("logfile.txt 2>&1");
                     //optionsPJS.AddAdditionalCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25");
                     DesiredCapabilities phantomCapabilites = DesiredCapabilities.PhantomJS();
-                    optionsPJS.AddAdditionalCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:16.0) Gecko/20121026 Firefox/16.0");  
+                    optionsPJS.AddAdditionalCapability("phantomjs.page.settings.userAgent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:16.0) Gecko/20121026 Firefox/16.0");
                     //service.CookiesFile = "cookies.txt";        
                     service.LocalStoragePath = rootLocation;
                     driver = new PhantomJSDriver(service, optionsPJS, TimeSpan.FromMinutes(3.0));
@@ -78,21 +163,25 @@ namespace DriverFramework
                     driver = new EdgeDriver(rootLocation, optionsEdge);
                     break;
                 case Browser.BSIE9:
-                    capability = DesiredCapabilities.InternetExplorer();
+                    capability = (DesiredCapabilities)ieOptions.ToCapabilities();
                     SetCapabilities(capability);
                     capability.SetCapability("version", 9.0);
+                    capability.SetCapability("browser", "IE");
                     capability.SetCapability(CapabilityType.Platform, new Platform(PlatformType.Vista));
                     driver = new WebdriverExtensions.ScreenShotRemoteWebDriver(new Uri("http://hub.browserstack.com/wd/hub/"), capability);
                     break;
                 case Browser.BSIE10:
-                    capability = DesiredCapabilities.InternetExplorer();
+                    capability = (DesiredCapabilities)ieOptions.ToCapabilities();
                     SetCapabilities(capability);
+                    SetCapabilities(capability);
+                    capability.SetCapability("browser", "IE");
                     capability.SetCapability("version", 10.0);
                     driver = new WebdriverExtensions.ScreenShotRemoteWebDriver(new Uri("http://hub.browserstack.com/wd/hub/"), capability);
                     break;
                 case Browser.BSIE11:
-                    capability = DesiredCapabilities.InternetExplorer();
+                    capability = (DesiredCapabilities)ieOptions.ToCapabilities();
                     SetCapabilities(capability);
+                    capability.SetCapability("browser", "IE");
                     capability.SetCapability("version", 11.0);
                     capability.SetCapability(CapabilityType.Platform, "Win8");
                     driver = new WebdriverExtensions.ScreenShotRemoteWebDriver(new Uri("http://hub.browserstack.com/wd/hub/"), capability);
@@ -106,15 +195,6 @@ namespace DriverFramework
             driver.Navigate().Refresh();
         }
 
-        public static void resize()
-        {
-            if (driver.GetType() != typeof(PhantomJSDriver))
-            {
-                IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-
-                js.ExecuteScript("window.resizeTo(1000, 1000);");
-            }
-        }
 
         public static int GetPageHeight()
         {
@@ -123,6 +203,20 @@ namespace DriverFramework
             var height = js.ExecuteScript("return document.documentElement.scrollHeight;");
 
             return Convert.ToInt32(height);
+        }
+
+        public static void ScrollElementIntoView(IWebElement element)
+        {
+            IJavaScriptExecutor Ijs = (IJavaScriptExecutor)driver;
+
+            Ijs.ExecuteScript("arguments[0].scrollIntoView();", element);
+        }
+
+        public static void SimulateClickJS(IWebElement element)
+        {
+            IJavaScriptExecutor Ijs = (IJavaScriptExecutor)driver;
+
+            Ijs.ExecuteScript("arguments[0].click()", element);
         }
 
         public static void ExecuteResultScript(bool result)
@@ -134,7 +228,7 @@ namespace DriverFramework
         public static void ExecuteBuildNumberScript(string buildName)
         {
             IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-            js.ExecuteScript("sauce:job-build="+buildName+"");
+            js.ExecuteScript("sauce:job-build=" + buildName + "");
         }
 
         public static void ExecuteJobVisibility()
@@ -166,7 +260,7 @@ namespace DriverFramework
             {
                 driver.SwitchTo().Window(windowHandles[0]);
             }
-            
+
             //driver.Dispose();
             driver.Quit();
 
@@ -187,13 +281,9 @@ namespace DriverFramework
 
         }
 
-
-
         private static void SetCapabilities(DesiredCapabilities capabilities, string profile = null, string environment = null)
-        {  
-
-
-            string[] BrowserStackCredentials = { "browserstack.user", "****", "browserstack.key", "******" };
+        {
+            string[] BrowserStackCredentials = { "browserstack.user", "peterhughes6", "browserstack.key", "QunVA78sSpbuCoydDui9" };
             capabilities.SetCapability(BrowserStackCredentials[0], BrowserStackCredentials[1]);
             capabilities.SetCapability(BrowserStackCredentials[2], BrowserStackCredentials[3]);
 
@@ -203,21 +293,26 @@ namespace DriverFramework
 
         public static void Maximise()
         {
-            //driver.Manage().Window.Maximize();
             driver.Manage().Window.Size = new System.Drawing.Size(1366, GetPageHeight());
         }
 
-        public static void MobileResize(int width = 375, int height = 2000)
+        public static void MobileResize(int width = 375)
         {
             driver.Manage().Window.Size = new System.Drawing.Size(width, GetPageHeight());
             Wait(1);
             driver.Manage().Window.Size = new System.Drawing.Size(width, GetPageHeight());
         }
 
-        public static void DesktopResize(int width = 1366, int height = 3000)
+        public static void DesktopResize(int width = 1366)
         {
             driver.Manage().Window.Size = new System.Drawing.Size(width, GetPageHeight());
         }
+
+        public static void Resize(int width, int height)
+        {
+            driver.Manage().Window.Size = new System.Drawing.Size(width, height);
+        }
+
 
         public enum Browser
         {
@@ -227,6 +322,12 @@ namespace DriverFramework
             IE11_Windows7_SL,
             Chrome,
             Headless_Chrome,
+            Chrome_Mobile,
+            Chrome_Ipad,
+            Chrome_Landscape_Ipad,
+            Headless_Chrome_Ipad,
+            Headless_Chrome_Landscape_Ipad,
+            Headless_Chrome_Mobile,
             Firefox,
             IE,
             BSIE9,
@@ -240,8 +341,6 @@ namespace DriverFramework
         };
 
 
-        public string foundHotelsUrl { get; set; }
-
         public static string Title
         {
             get { return driver.Title; }
@@ -252,7 +351,6 @@ namespace DriverFramework
             get { return driver.Url; }
         }
 
-
         public static string PageSource
         {
             get { return driver.PageSource; }
@@ -260,25 +358,12 @@ namespace DriverFramework
 
         /// <summary>
         /// Wait for a specified time
+        /// Defaults to 1 second
         /// </summary>
         /// <param name="seconds"></param>
-        public static void Wait(int seconds)
+        public static void Wait(int seconds = 1)
         {
             Thread.Sleep(TimeSpan.FromSeconds(seconds));
-        }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="url"></param>
-        public static void GoTo(string url)
-        {
-            //Maximise();
-            
-             driver.Navigate().GoToUrl(url);
-            Wait(1);
-            Maximise();
         }
 
         public static void OpenNewTab()
@@ -289,16 +374,21 @@ namespace DriverFramework
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="url"></param>
+        public static void GoTo(string url)
+        {
+            driver.Navigate().GoToUrl(url);
+        }
+
+
+        /// <summary>
         /// Navigates to the requested page, the pagesource will be checked for the presence of the check
         /// </summary>        
         public static void GoTo(string url, string check)
         {
-            //Maximise();
-
-
-            driver.Navigate().GoToUrl(url); // Live Site
-            Wait(1);
-            Maximise();
+            driver.Navigate().GoToUrl(url);
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
             try
             {
@@ -307,10 +397,8 @@ namespace DriverFramework
 
             catch
             {
-                throw new Exception(string.Format("Failed to access requested page {0}, with specified text: {1}",url,check));
+                throw new Exception(string.Format("Failed to access requested page {0}, with specified text: {1}", url, check));
             }
-
-            
 
         }
 
@@ -675,26 +763,6 @@ namespace DriverFramework
         }
 
         #endregion
-
-        public static void WriteBadUrl()
-        {
-            System.IO.StreamWriter swr = System.IO.File.AppendText("BAD.txt");
-            using (swr)
-            {
-                swr.WriteLine(driver.Url.ToString());
-            }
-        }
-
-        public static void WriteGoodUrl()
-        {
-            System.IO.StreamWriter swr = System.IO.File.AppendText("GOOD.txt");
-            using (swr)
-            {
-                swr.WriteLine(driver.Url.ToString());
-            }
-
-        }
-
 
 
         public static void ScrollToTopOfPageUsingJS()

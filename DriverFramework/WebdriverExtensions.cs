@@ -26,7 +26,7 @@ namespace DriverFramework
                 return base.SessionId.ToString();
             }
 
-            public Screenshot GetScreenshot()
+            public new Screenshot GetScreenshot()
             {
                 // Get the screenshot as base64. 
                 Response screenshotResponse = this.Execute(DriverCommand.Screenshot, null);
@@ -36,10 +36,9 @@ namespace DriverFramework
             }
         }
 
-        public static string SiD = "";
+        private static string siD = "";
 
-
-
+        public static string SiD { get => siD; set => siD = value; }
     }
 
 
