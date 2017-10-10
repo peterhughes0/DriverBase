@@ -283,7 +283,7 @@ namespace DriverFramework
 
         private static void SetCapabilities(DesiredCapabilities capabilities, string profile = null, string environment = null)
         {
-            string[] BrowserStackCredentials = { "browserstack.user", "peterhughes6", "browserstack.key", "QunVA78sSpbuCoydDui9" };
+            string[] BrowserStackCredentials = { "browserstack.user", "", "browserstack.key", "" };
             capabilities.SetCapability(BrowserStackCredentials[0], BrowserStackCredentials[1]);
             capabilities.SetCapability(BrowserStackCredentials[2], BrowserStackCredentials[3]);
 
