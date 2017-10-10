@@ -36,16 +36,8 @@ namespace DriverFramework
             }
         }
 
-        private static string siD = "";
-
-        public static string SiD
-        {
-            get => siD;
-            set
-            {
-                siD = value;
-            }
-        }
+        private static string SiD = "";
+               
     }
 
 
