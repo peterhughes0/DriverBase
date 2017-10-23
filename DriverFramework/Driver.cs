@@ -22,25 +22,36 @@ namespace DriverFramework
     public class Driver
     {
         public static IWebDriver driver { get; set; }
-        
+
         public static string rootLocation = new Uri(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase)).LocalPath;
 
-        public static void Initialize(Browser browser, NUnit.Framework.TestContext testContext)
+        public static void Initialize(Browser browser, NUnit.Framework.TestContext testContext, bool headless = false)
         {
             //BrowserStack
             DesiredCapabilities capability = null;
 
             ChromeMobileEmulationDeviceSettings chromeMobileEmulationDeviceSettings = null;
 
-            ChromeOptions chromeOptions = null;
+            ChromeOptions chromeOptions = new ChromeOptions();
+
+            chromeOptions.AddArgument("--test-type");
+            chromeOptions.AddArgument("--disable-extensions");
 
             InternetExplorerOptions ieOptions = new InternetExplorerOptions();
+
+            if (headless)
+            {
+                chromeOptions.AddArgument("--headless");
+                chromeOptions.AddArgument("--hide-scrollbars");
+                chromeOptions.AddArgument("--disable-gpu");
+                //headless_option.AddArgument("--remote-debugging-port=9222");
+                chromeOptions.BinaryLocation = string.Format(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe");
+            }
 
 
             switch (browser)
             {
                 case Browser.Chrome:
-                    chromeOptions = new ChromeOptions();
                     chromeOptions.AddArgument("--test-type");
                     chromeOptions.AddArgument("--disable-extensions");
                     chromeOptions.AddArgument("start-maximized");
@@ -49,31 +60,29 @@ namespace DriverFramework
 
                     break;
 
-                case Browser.Headless_Chrome:
-                    chromeOptions = new ChromeOptions();
-                    chromeOptions.AddArgument("--headless");
-                    chromeOptions.AddArgument("--hide-scrollbars");
-                    //headless_option.AddArgument("--remote-debugging-port=9222");
-                    chromeOptions.AddArgument("--disable-gpu");
-                    chromeOptions.BinaryLocation = string.Format(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe");
+                case Browser.Chrome_1024x768:
+                    chromeMobileEmulationDeviceSettings = new ChromeMobileEmulationDeviceSettings();
+                    chromeMobileEmulationDeviceSettings.Width = 1024;
+                    chromeMobileEmulationDeviceSettings.Height = 768;
+                    chromeMobileEmulationDeviceSettings.EnableTouchEvents = false;
+                    chromeMobileEmulationDeviceSettings.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36";
+                    chromeOptions.EnableMobileEmulation(chromeMobileEmulationDeviceSettings);
                     driver = new ChromeDriver(chromeOptions);
-                    Maximise();
-
+                    Resize(1024, 768);
                     break;
 
-                case Browser.Headless_Chrome_Mobile:
-                    chromeOptions = new ChromeOptions();
-                    chromeOptions.EnableMobileEmulation("iPhone 6");
-                    chromeOptions.AddArgument("--test-type");
-                    chromeOptions.AddArgument("--disable-extensions");
-                    chromeOptions.AddArgument("--headless");
-                    chromeOptions.AddArgument("--disable-gpu");
+                case Browser.Chrome_1366x768:
+                    chromeMobileEmulationDeviceSettings = new ChromeMobileEmulationDeviceSettings();
+                    chromeMobileEmulationDeviceSettings.Width = 1366;
+                    chromeMobileEmulationDeviceSettings.Height = 768;
+                    chromeMobileEmulationDeviceSettings.EnableTouchEvents = false;
+                    chromeMobileEmulationDeviceSettings.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36";
+                    chromeOptions.EnableMobileEmulation(chromeMobileEmulationDeviceSettings);
                     driver = new ChromeDriver(chromeOptions);
-                    Resize(414, 736);
+                    Resize(1366, 768);
                     break;
 
                 case Browser.Chrome_Mobile:
-                    chromeOptions = new ChromeOptions();
                     chromeOptions.EnableMobileEmulation("iPhone 6");
                     chromeOptions.AddArgument("--test-type");
                     chromeOptions.AddArgument("--disable-extensions");
@@ -86,10 +95,7 @@ namespace DriverFramework
                     chromeMobileEmulationDeviceSettings.Width = 768;
                     chromeMobileEmulationDeviceSettings.Height = 1024;
                     chromeMobileEmulationDeviceSettings.UserAgent = "Mozilla/5.0 (iPad; CPU OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1";
-                    chromeOptions = new ChromeOptions();
                     chromeOptions.EnableMobileEmulation(chromeMobileEmulationDeviceSettings);
-                    chromeOptions.AddArgument("--test-type");
-                    chromeOptions.AddArgument("--disable-extensions");
                     driver = new ChromeDriver(chromeOptions);
                     Resize(768, 1024);
                     break;
@@ -99,40 +105,7 @@ namespace DriverFramework
                     chromeMobileEmulationDeviceSettings.Width = 1024;
                     chromeMobileEmulationDeviceSettings.Height = 768;
                     chromeMobileEmulationDeviceSettings.UserAgent = "Mozilla/5.0 (iPad; CPU OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1";
-                    chromeOptions = new ChromeOptions();
                     chromeOptions.EnableMobileEmulation(chromeMobileEmulationDeviceSettings);
-                    chromeOptions.AddArgument("--test-type");
-                    chromeOptions.AddArgument("--disable-extensions");
-                    driver = new ChromeDriver(chromeOptions);
-                    Resize(1024, 768);
-                    break;
-
-                case Browser.Headless_Chrome_Ipad:
-                    chromeMobileEmulationDeviceSettings = new ChromeMobileEmulationDeviceSettings();
-                    chromeMobileEmulationDeviceSettings.Width = 768;
-                    chromeMobileEmulationDeviceSettings.Height = 1024;
-                    chromeMobileEmulationDeviceSettings.UserAgent = "Mozilla/5.0 (iPad; CPU OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1";
-                    chromeOptions = new ChromeOptions();
-                    chromeOptions.EnableMobileEmulation(chromeMobileEmulationDeviceSettings);
-                    chromeOptions.AddArgument("--test-type");
-                    chromeOptions.AddArgument("--disable-extensions");
-                    chromeOptions.AddArgument("--headless");
-                    chromeOptions.AddArgument("--disable-gpu");
-                    driver = new ChromeDriver(chromeOptions);
-                    Resize(768, 1024);
-                    break;
-
-                case Browser.Headless_Chrome_Landscape_Ipad:
-                    chromeMobileEmulationDeviceSettings = new ChromeMobileEmulationDeviceSettings();
-                    chromeMobileEmulationDeviceSettings.Width = 1024;
-                    chromeMobileEmulationDeviceSettings.Height = 768;
-                    chromeMobileEmulationDeviceSettings.UserAgent = "Mozilla/5.0 (iPad; CPU OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1";
-                    chromeOptions = new ChromeOptions();
-                    chromeOptions.EnableMobileEmulation(chromeMobileEmulationDeviceSettings);
-                    chromeOptions.AddArgument("--test-type");
-                    chromeOptions.AddArgument("--disable-extensions");
-                    chromeOptions.AddArgument("--headless");
-                    chromeOptions.AddArgument("--disable-gpu");
                     driver = new ChromeDriver(chromeOptions);
                     Resize(1024, 768);
                     break;
@@ -283,7 +256,7 @@ namespace DriverFramework
 
         private static void SetCapabilities(DesiredCapabilities capabilities, string profile = null, string environment = null)
         {
-            string[] BrowserStackCredentials = { "browserstack.user", "", "browserstack.key", "" };
+            string[] BrowserStackCredentials = { "browserstack.user", "peterhughes6", "browserstack.key", "QunVA78sSpbuCoydDui9" };
             capabilities.SetCapability(BrowserStackCredentials[0], BrowserStackCredentials[1]);
             capabilities.SetCapability(BrowserStackCredentials[2], BrowserStackCredentials[3]);
 
@@ -321,13 +294,11 @@ namespace DriverFramework
             IE11_Windows8_SL,
             IE11_Windows7_SL,
             Chrome,
-            Headless_Chrome,
             Chrome_Mobile,
             Chrome_Ipad,
             Chrome_Landscape_Ipad,
-            Headless_Chrome_Ipad,
-            Headless_Chrome_Landscape_Ipad,
-            Headless_Chrome_Mobile,
+            Chrome_1366x768,
+            Chrome_1024x768,
             Firefox,
             IE,
             BSIE9,
@@ -784,9 +755,6 @@ namespace DriverFramework
                 js.ExecuteScript("window.scrollTo(0,2000)", "");
             }
         }
-
-
-
 
 
     }
