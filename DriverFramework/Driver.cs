@@ -160,7 +160,10 @@ namespace DriverFramework
                     driver = new WebdriverExtensions.ScreenShotRemoteWebDriver(new Uri("http://hub.browserstack.com/wd/hub/"), capability);
                     break;
 
+
             }
+
+            explicitlyWait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
         }
 
         public static void Refresh()
@@ -168,6 +171,17 @@ namespace DriverFramework
             driver.Navigate().Refresh();
         }
 
+        static WebDriverWait explicitlyWait;
+
+        public static WebDriverWait ExplicitlyWait
+        {
+            get { return explicitlyWait; }
+
+            set
+            {
+                explicitlyWait = value;
+            }
+        }
 
         public static int GetPageHeight()
         {
@@ -256,7 +270,7 @@ namespace DriverFramework
 
         private static void SetCapabilities(DesiredCapabilities capabilities, string profile = null, string environment = null)
         {
-            string[] BrowserStackCredentials = { "browserstack.user", "peterhughes6", "browserstack.key", "QunVA78sSpbuCoydDui9" };
+            string[] BrowserStackCredentials = { "browserstack.user", "peterhughes6", "browserstack.key", "" };
             capabilities.SetCapability(BrowserStackCredentials[0], BrowserStackCredentials[1]);
             capabilities.SetCapability(BrowserStackCredentials[2], BrowserStackCredentials[3]);
 
@@ -326,6 +340,8 @@ namespace DriverFramework
         {
             get { return driver.PageSource; }
         }
+
+
 
         /// <summary>
         /// Wait for a specified time
@@ -430,42 +446,23 @@ namespace DriverFramework
 
         #endregion
 
-        #region containsElement
+        #region Contains Checks
 
-        public static bool IDElementContainsText(string elementName, string text, int time)
+        public static void ElementContainsText(string elementName, string text, int time)
         {
             try
             {
                 WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(time));
                 wait.Until((d) => { return d.FindElement(By.Id(elementName)).Text.Contains(text); });
 
-                return true;
-
             }
             catch
             {
-                return false;
+                throw new Exception(string.Format("Element with Id '{0}' is not present or does not contain text '{1}'", elementName, text)); ;
             }
         }
 
-        // Function  to check for the existence of an element by ID
-        public static bool ContainsElementByID(string id)
-        {
-            try
-            {
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                wait.Until((d) => { return d.FindElements(By.Id(id)).Count > 0; });
-            }
-            catch
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        // Overloaded for custom wait time
-        public static bool ContainsElementByID(string id, int time)
+        public static void ContainsElementByID(string id, int time = 5)
         {
             try
             {
@@ -474,31 +471,13 @@ namespace DriverFramework
             }
             catch
             {
-                return false;
+                throw new Exception(string.Format("Element with Id '{0}' cannot be found", id)); ;
             }
 
-            return true;
         }
 
-        // Function to check for the existence of element by its CSS classname
-        public static bool ContainsElementByCSSClass(string className)
-        {
-            try
-            {
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                wait.Until((d) => { return d.FindElements(By.ClassName(className)).Count > 0; });
-            }
 
-            catch
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        // Overloaded for custom wait time
-        public static bool ContainsElementByCSSClass(string className, int time)
+        public static void ContainsElementByCSSClass(string className, int time = 5)
         {
             try
             {
@@ -508,31 +487,12 @@ namespace DriverFramework
 
             catch
             {
-                return false;
+                throw new Exception(string.Format("Element with class name '{0}' cannot be found", className)); ;
             }
 
-            return true;
         }
 
-        // Function to check the existence of an element by its name
-        public static bool ContainsElementByName(string name)
-        {
-            try
-            {
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                wait.Until((d) => { return d.FindElements(By.Name(name)).Count > 0; });
-            }
-
-            catch
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        // Overloaded for custom wait time
-        public static bool ContainsElementByName(string name, int time)
+        public static void ContainsElementByName(string name, int time = 5)
         {
             try
             {
@@ -542,10 +502,9 @@ namespace DriverFramework
 
             catch
             {
-                return false;
+                throw new Exception(string.Format("Element with name '{0}' cannot be found", name));
             }
 
-            return true;
         }
 
 
@@ -559,21 +518,54 @@ namespace DriverFramework
 
                 IWebElement theElement = driver.FindElement(By.ClassName(element));
                 var attributeResult = theElement.GetAttribute(attribute);
+
                 if (attributeIs != attributeResult)
                 {
                     return true;
                 }
                 else
                 {
-                    return false;
+                    throw new Exception(string.Format("Class Element '{0}' does not have attribute mathcing '{1}', found '{2}'", element, attribute, attributeIs));
                 }
             }
             catch
             {
-                return false;
+                throw new Exception(string.Format("Failed to find Class element '{0}", element));
             }
 
         }
+
+        public static void ContainsLinkText(string criteria, int time = 5)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(time));
+                wait.Until((d) => { return d.FindElements(By.LinkText(criteria)).Count > 0; });
+            }
+
+            catch
+            {
+                throw new Exception(string.Format("Failed to find Link text '{0}", criteria));
+            }
+        }
+
+
+        // General function to check that the current Pagesource contains the given text
+        public static void ContainsText(string text, int time = 5)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(time));
+                wait.Until((d) => { return d.PageSource.Contains(text); });
+            }
+            catch
+            {
+                throw new Exception(string.Format("Failed to find text '{0}", text));
+            }
+
+        }
+
+        #endregion
 
         // Function to switch to a particular frame ie: an Iframe
         public static void SwitchToFrame(string content, int number)
@@ -652,88 +644,7 @@ namespace DriverFramework
             return true;
         }
 
-        // Overloaded for custom wait time
-        public static bool ContainsLinkText(string criteria, int time)
-        {
-            try
-            {
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(time));
-                wait.Until((d) => { return d.FindElements(By.LinkText(criteria)).Count > 0; });
-            }
 
-            catch
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-
-        // General function to check that the current Pagesource contains the given text
-        public static bool ContainsText(string text)
-        {
-            try
-            {
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                wait.Until((d) => { return d.PageSource.Contains(text); });
-            }
-            catch
-            {
-                return false;
-            }
-
-            return driver.PageSource.Contains(text);
-        }
-
-        // General function to check that the current Pagesource contains the given text
-        // Overloaded with option to add custom time to wait
-        public static bool ContainsText(string text, int time)
-        {
-            try
-            {
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(time));
-                wait.Until((d) => { return d.PageSource.Contains(text); });
-            }
-            catch
-            {
-                return false;
-            }
-
-            return driver.PageSource.Contains(text);
-        }
-
-        public static bool ContainsCssSelector(string cssSelector)
-        {
-            try
-            {
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                wait.Until((d) => { return d.FindElements(By.CssSelector(cssSelector)).Count > 0; });
-            }
-            catch
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public static bool ContainsCssSelector(string cssSelector, int time)
-        {
-            try
-            {
-                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(time));
-                wait.Until((d) => { return d.FindElements(By.CssSelector(cssSelector)).Count > 0; });
-            }
-            catch
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        #endregion
 
 
         public static void ScrollToTopOfPageUsingJS()
@@ -758,4 +669,5 @@ namespace DriverFramework
 
 
     }
+
 }
